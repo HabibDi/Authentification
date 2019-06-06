@@ -1,0 +1,31 @@
+<!-- Copie view Tatiana -->
+<!doctype html>
+<html>
+<head>
+	<title>Guetteur</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> 
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> 
+	<style>
+		body 		{ padding-top:80px; background-color: black; }
+	</style>
+</head>
+<body>
+<div class="container">
+<% if (typeof error !== 'undefined') { %>
+<h3><%= error %></h3>
+<% } %>
+
+
+	<div class="jumbotron text-center">
+		<h1><span class="fa fa-lock"></span> Scooter, écouteur</h1>
+
+		<form class="form-group" method="post">
+        <input type="text" name="email" placeholder="Entrez votre email">
+        <input type="password" name="password" placeholder="Entrez votre mot de passe">
+        <input type="password" name="passwordConfirm" placeholder="Confirmez votre mot de passe">
+        <input type="submit" value="SignUp">
+	</div>
+
+</div>
+</body>
+</html>
