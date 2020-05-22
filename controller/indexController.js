@@ -7,30 +7,50 @@ module.exports.home = function (req, res) {
 };
 
 module.exports.login = function (req, res) {
-    if (req.method !== 'POST')
+    if (req.method !== 'POST') {
         res.render('login.ejs', {});
+    }
+
     else {
         if (req.body.email && req.body.password) {
-            User.find()
-        }
-        else {
-            res.render('login.ejs', { error: err })
+            User.find({ email: req.body.email }, function (err, user) {
+                if (err) res.render('login.ejs', { error: err })
+                else if (typeof user[0] == 'undefined') res.render('login.ejs', { error: "Utilisateur introuvable" });
 
+
+                else {
+                    bcrypt.compare(req.body.password, user[0].password).then(function (response) {
+                        if (response) {
+                            req.session.user = user;
+                            res.redirect('/');
+                        }
+                        else {
+                            res.render('login.ejs', { error: 'Le mot de passe est incorrect' })
+                        };
+                    });
+                }
+            });
         }
+
+        else
+            res.render('login.ejs', { error: "Veuillez indiquer votre email et votre mot de passe" });
+
+
+
     };
 
 
     module.exports.signup = function (req, res) {
-        if (req.method !== 'POST')
-            res.render('signup.ejs', {});
+        if (req.method !== 'POST') res.render('signup.ejs', {});
+
         else {
             if (req.body.password === req.body.passwordConfirm) {
-                User.create({ email: req.body.email, password: req.body.password }, function (err) {
-                    if (err) res.render('signup.ejs', { error: "Belek au guetteur" });
+                User.create({ email: req.body.email, password: req.body.password }, function (err, user) {
+                    if (err) res.render('signup.ejs', { error: err });
                     else {
                         res.redirect('/login')
                     }
-                })
+                });
             }
 
             else
@@ -38,4 +58,9 @@ module.exports.login = function (req, res) {
         }
     };
 
-}
+};
+
+module.exports.logout = function (req, res) {
+    if (req.session.user) req.session.user.destroy();
+    return res.redirect('/login');
+};

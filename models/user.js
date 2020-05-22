@@ -12,7 +12,6 @@ var User = new Schema({
     facebook: {
         id: Number,
         name: String,
-        token: String
     }
 
 });
@@ -33,6 +32,31 @@ User.methods.comparePassword = function (password, cb) {
         if (err) return err;
         cb(null, res);
     })
+}
+
+User.statics.findOrCreate = function (profile, cb) {
+    let that = this;
+    that.findOne({ 'facebook.id': profile.id }, function (err, user) {
+        if (err) return cb(err, null);
+
+        else if (!user) {
+            that.create({ facebook: { id: profile.id }, name: profile.displayName }), function (err, createdUser) {
+                if (err) return cb(err, null);
+                return cb(null, user);
+
+                console.log(createdUser);
+                return cb(null, createdUser)
+            }
+
+        }
+
+        else {
+            return cb(null, createdUser);
+
+        }
+    })
+
+
 }
 
 module.exports = mongoose.model('User', User);
